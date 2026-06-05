@@ -515,7 +515,7 @@ export function _diagnose(text) {
 }
 
 function _diagnosisCopyBundle(task, diagnosis, sourceText, suggestionText) {
-  const lines = ['## Odysseus Cookbook troubleshooting'];
+  const lines = ['## Austin Cookbook troubleshooting'];
   if (task) {
     lines.push(
       '',

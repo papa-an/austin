@@ -1,7 +1,7 @@
 """Codex integration routes.
 
 These are small HTTP surfaces intended for the Codex plugin/MCP bridge. They
-reuse existing Odysseus helpers and enforce API-token scopes before touching
+reuse existing Austin helpers and enforce API-token scopes before touching
 user data.
 """
 
@@ -148,9 +148,9 @@ def setup_codex_routes(
             for path in sorted(root.rglob("*")):
                 if path.is_dir() or "__pycache__" in path.parts or path.suffix == ".pyc":
                     continue
-                zf.write(path, Path("odysseus") / path.relative_to(root))
+                zf.write(path, Path("austin") / path.relative_to(root))
         buf.seek(0)
-        headers = {"Content-Disposition": 'attachment; filename="odysseus-codex-plugin.zip"'}
+        headers = {"Content-Disposition": 'attachment; filename="austin-codex-plugin.zip"'}
         return StreamingResponse(buf, media_type="application/zip", headers=headers)
 
     @router.get("/todos")
@@ -401,7 +401,7 @@ def setup_claude_routes() -> APIRouter:
                     continue
                 zf.write(path, path.relative_to(bundle_root))
         buf.seek(0)
-        headers = {"Content-Disposition": 'attachment; filename="odysseus-claude-skill.zip"'}
+        headers = {"Content-Disposition": 'attachment; filename="austin-claude-skill.zip"'}
         return StreamingResponse(buf, media_type="application/zip", headers=headers)
 
     return router

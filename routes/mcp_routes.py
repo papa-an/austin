@@ -22,7 +22,7 @@ router = APIRouter(prefix="/api/mcp", tags=["mcp"])
 
 
 def _mcp_oauth_base_dir() -> Path:
-    """Directory that may contain OAuth files managed by Odysseus."""
+    """Directory that may contain OAuth files managed by Austin."""
     return (Path(DATA_DIR) / "mcp_oauth").resolve(strict=False)
 
 
