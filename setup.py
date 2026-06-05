@@ -168,7 +168,7 @@ def check_deps():
 
 
 def main():
-    print("\n=== Odysseus Setup ===\n")
+    print("\n=== AUSTIN Setup ===\n")
 
     print("1. Creating directories...")
     create_dirs()

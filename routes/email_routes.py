@@ -641,12 +641,15 @@ def setup_email_routes():
                 # All emails NOT marked as answered/done (read or unread).
                 status, data = _imap_uid_search(conn, f"(UNANSWERED{from_clause})")
             elif filter_ == "reminders":
-                # Prefer the Odysseus marker header, but include the subject
-                # fallback too. The fallback uses a distinct Odysseus prefix
-                # so ordinary emails containing "Reminder" don't get mixed in.
+                # Prefer the X-Odysseus-Kind marker header, but include the
+                # subject fallback too. The fallback uses a distinct branded
+                # prefix so ordinary emails containing "Reminder" don't get
+                # mixed in. Both the current "AUSTIN" prefix and the legacy
+                # "Odysseus" prefix are matched so reminders already sitting in
+                # mailboxes from before the rename are still found.
                 status, data = _imap_uid_search(
                     conn,
-                    f'(OR HEADER X-Odysseus-Kind "reminder" SUBJECT "Reminder (Odysseus):"{from_clause})',
+                    f'(OR HEADER X-Odysseus-Kind "reminder" (OR SUBJECT "Reminder (AUSTIN):" SUBJECT "Reminder (Odysseus):"){from_clause})',
                 )
             elif filter_ == "pending_30d":
                 # "What's pending in the last month" — UNANSWERED + delivered
@@ -1794,9 +1797,11 @@ def setup_email_routes():
                         # explicit kind header, and subject fallback catches
                         # clients/providers that stripped custom headers.
                         uids.update(_search_uids(conn, f'(HEADER X-Odysseus-Kind {_search_quote("reminder")})'))
+                        uids.update(_search_uids(conn, f'(SUBJECT {_search_quote("Reminder (AUSTIN):")})'))
                         uids.update(_search_uids(conn, f'(SUBJECT {_search_quote("Reminder (Odysseus):")})'))
                         for addr in own_addrs:
                             addr_q = _search_quote(addr)
+                            uids.update(_search_uids(conn, f'(FROM {addr_q} SUBJECT {_search_quote("Reminder (AUSTIN):")})'))
                             uids.update(_search_uids(conn, f'(FROM {addr_q} SUBJECT {_search_quote("Reminder (Odysseus):")})'))
                             # Legacy reminders created before the Odysseus
                             # prefix still came from this mailbox as
