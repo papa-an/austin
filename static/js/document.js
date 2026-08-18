@@ -3203,7 +3203,7 @@ import { bindMenuDismiss, dismissOrRemove } from './escMenuStack.js';
 
   let _odysseusAttachMenu = null;
 
-  function _closeOdysseusAttachMenu() {
+  function _closeAUSTINAttachMenu() {
     if (_odysseusAttachMenu) {
       _odysseusAttachMenu.remove();
       _odysseusAttachMenu = null;
@@ -3213,15 +3213,15 @@ import { bindMenuDismiss, dismissOrRemove } from './escMenuStack.js';
   }
 
   function _attachMenuOutsideClick(e) {
-    if (_odysseusAttachMenu && !_odysseusAttachMenu.contains(e.target)) _closeOdysseusAttachMenu();
+    if (_odysseusAttachMenu && !_odysseusAttachMenu.contains(e.target)) _closeAUSTINAttachMenu();
   }
 
   function _attachMenuEscape(e) {
     if (e.key !== 'Escape') return;
-    _closeOdysseusAttachMenu();
+    _closeAUSTINAttachMenu();
   }
 
-  function _positionOdysseusAttachMenu(anchor, menu) {
+  function _positionAUSTINAttachMenu(anchor, menu) {
     const r = anchor?.getBoundingClientRect?.();
     if (!r) return;
     menu.style.left = `${Math.max(8, Math.min(r.left, window.innerWidth - 310))}px`;
@@ -3241,7 +3241,7 @@ import { bindMenuDismiss, dismissOrRemove } from './escMenuStack.js';
     return item.title || 'Untitled document';
   }
 
-  async function _stageOdysseusAttachment(kind, id) {
+  async function _stageAUSTINAttachment(kind, id) {
     const doc = docs.get(activeDocId);
     if (!doc || doc.language !== 'email') return null;
     if (!doc._composeAtts) doc._composeAtts = [];
@@ -3262,7 +3262,7 @@ import { bindMenuDismiss, dismissOrRemove } from './escMenuStack.js';
     return data;
   }
 
-  async function _stageOdysseusZip(items) {
+  async function _stageAUSTINZip(items) {
     const doc = docs.get(activeDocId);
     if (!doc || doc.language !== 'email') return null;
     if (!doc._composeAtts) doc._composeAtts = [];
@@ -3283,31 +3283,31 @@ import { bindMenuDismiss, dismissOrRemove } from './escMenuStack.js';
     return data;
   }
 
-  function _afterOdysseusAttachmentsAdded(count, label) {
+  function _afterAUSTINAttachmentsAdded(count, label) {
     _renderComposeAttachments();
     clearTimeout(_autoSaveDebounce);
     _autoSaveDebounce = setTimeout(() => { saveDocument({ silent: true }); }, 800);
     if (uiModule) uiModule.showToast(count > 1 ? `Attached ${count} items` : `Attached ${label || 'item'}`);
   }
 
-  async function _attachOdysseusItem(kind, id, label, opts = {}) {
+  async function _attachAUSTINItem(kind, id, label, opts = {}) {
     try {
-      const data = await _stageOdysseusAttachment(kind, id);
+      const data = await _stageAUSTINAttachment(kind, id);
       if (!data) return;
-      _afterOdysseusAttachmentsAdded(1, label || data.filename);
-      if (!opts.keepOpen) _closeOdysseusAttachMenu();
+      _afterAUSTINAttachmentsAdded(1, label || data.filename);
+      if (!opts.keepOpen) _closeAUSTINAttachMenu();
     } catch (err) {
-      console.error('Failed to attach Odysseus item:', err);
-      if (uiModule) uiModule.showError('Failed to attach from Odysseus');
+      console.error('Failed to attach AUSTIN item:', err);
+      if (uiModule) uiModule.showError('Failed to attach from AUSTIN');
     }
   }
 
-  function _selectedOdysseusAttachRows(menu) {
+  function _selectedAUSTINAttachRows(menu) {
     return Array.from(menu?.querySelectorAll?.('.email-odysseus-attach-row.is-selected') || []);
   }
 
-  function _syncOdysseusAttachSelection(menu) {
-    const selected = _selectedOdysseusAttachRows(menu);
+  function _syncAUSTINAttachSelection(menu) {
+    const selected = _selectedAUSTINAttachRows(menu);
     const bar = menu?.querySelector?.('.email-odysseus-attach-actions');
     const count = menu?.querySelector?.('.email-odysseus-attach-count');
     const attachBtn = menu?.querySelector?.('.email-odysseus-attach-selected');
@@ -3316,8 +3316,8 @@ import { bindMenuDismiss, dismissOrRemove } from './escMenuStack.js';
     if (attachBtn) attachBtn.disabled = selected.length === 0;
   }
 
-  async function _attachSelectedOdysseusItems(menu) {
-    const rows = _selectedOdysseusAttachRows(menu);
+  async function _attachSelectedAUSTINItems(menu) {
+    const rows = _selectedAUSTINAttachRows(menu);
     if (!rows.length) return;
     const btn = menu.querySelector('.email-odysseus-attach-selected');
     if (btn) {
@@ -3335,19 +3335,19 @@ import { bindMenuDismiss, dismissOrRemove } from './escMenuStack.js';
           : window.confirm(`Attach ${items.length} files as one zip?`);
       }
       if (zip) {
-        await _stageOdysseusZip(items);
+        await _stageAUSTINZip(items);
         added = 1;
       } else {
         for (const item of items) {
-          await _stageOdysseusAttachment(item.kind, item.id);
+          await _stageAUSTINAttachment(item.kind, item.id);
           added += 1;
         }
       }
-      _afterOdysseusAttachmentsAdded(added, zip ? 'odysseus-attachments.zip' : undefined);
-      _closeOdysseusAttachMenu();
+      _afterAUSTINAttachmentsAdded(added, zip ? 'odysseus-attachments.zip' : undefined);
+      _closeAUSTINAttachMenu();
     } catch (err) {
-      console.error('Failed to attach selected Odysseus items:', err);
-      if (uiModule) uiModule.showError(added ? `Attached ${added}, then failed` : 'Failed to attach from Odysseus');
+      console.error('Failed to attach selected AUSTIN items:', err);
+      if (uiModule) uiModule.showError(added ? `Attached ${added}, then failed` : 'Failed to attach from AUSTIN');
       _renderComposeAttachments();
     } finally {
       if (btn) {
@@ -3357,7 +3357,7 @@ import { bindMenuDismiss, dismissOrRemove } from './escMenuStack.js';
     }
   }
 
-  async function _loadOdysseusAttachItems(menu, kind) {
+  async function _loadAUSTINAttachItems(menu, kind) {
     const list = menu.querySelector('.email-odysseus-attach-list');
     if (!list) return;
     menu.dataset.odyAttachKind = kind;
@@ -3380,7 +3380,7 @@ import { bindMenuDismiss, dismissOrRemove } from './escMenuStack.js';
         : (Array.isArray(data?.documents) ? data.documents : Array.isArray(data?.items) ? data.items : []);
       if (!items.length) {
         list.innerHTML = `<div class="email-odysseus-attach-empty">${q ? 'No matches' : `No ${kind === 'gallery' ? 'images' : 'documents'}`}</div>`;
-        _syncOdysseusAttachSelection(menu);
+        _syncAUSTINAttachSelection(menu);
         return;
       }
       list.innerHTML = '';
@@ -3414,14 +3414,14 @@ import { bindMenuDismiss, dismissOrRemove } from './escMenuStack.js';
         row.addEventListener('click', (ev) => {
           ev.preventDefault();
           row.classList.toggle('is-selected');
-          _syncOdysseusAttachSelection(menu);
+          _syncAUSTINAttachSelection(menu);
         });
-        row.addEventListener('dblclick', () => _attachOdysseusItem(kind, item.id, label, { keepOpen: false }));
+        row.addEventListener('dblclick', () => _attachAUSTINItem(kind, item.id, label, { keepOpen: false }));
         list.appendChild(row);
       }
-      _syncOdysseusAttachSelection(menu);
+      _syncAUSTINAttachSelection(menu);
     } catch (err) {
-      console.error('Failed to load Odysseus attach items:', err);
+      console.error('Failed to load AUSTIN attach items:', err);
       list.innerHTML = '<div class="email-odysseus-attach-empty">Could not load</div>';
     }
   }
@@ -3431,7 +3431,7 @@ import { bindMenuDismiss, dismissOrRemove } from './escMenuStack.js';
       document.getElementById('doc-md-image-input')?.click();
       return;
     }
-    _closeOdysseusAttachMenu();
+    _closeAUSTINAttachMenu();
     const menu = document.createElement('div');
     menu.className = 'email-odysseus-attach-menu';
     menu.innerHTML = `
@@ -3464,27 +3464,27 @@ import { bindMenuDismiss, dismissOrRemove } from './escMenuStack.js';
     `;
     document.body.appendChild(menu);
     _odysseusAttachMenu = menu;
-    _positionOdysseusAttachMenu(anchor, menu);
+    _positionAUSTINAttachMenu(anchor, menu);
     menu.querySelector('.email-odysseus-attach-local')?.addEventListener('click', () => {
-      _closeOdysseusAttachMenu();
+      _closeAUSTINAttachMenu();
       document.getElementById('doc-email-file-input')?.click();
     });
     menu.querySelectorAll('[data-ody-attach-kind]').forEach(btn => {
-      btn.addEventListener('click', () => _loadOdysseusAttachItems(menu, btn.dataset.odyAttachKind));
+      btn.addEventListener('click', () => _loadAUSTINAttachItems(menu, btn.dataset.odyAttachKind));
     });
     let attachSearchTimer = null;
     menu.querySelector('.email-odysseus-attach-search')?.addEventListener('input', () => {
       clearTimeout(attachSearchTimer);
       attachSearchTimer = setTimeout(() => {
-        _loadOdysseusAttachItems(menu, menu.dataset.odyAttachKind || 'document');
+        _loadAUSTINAttachItems(menu, menu.dataset.odyAttachKind || 'document');
       }, 220);
     });
-    menu.querySelector('.email-odysseus-attach-selected')?.addEventListener('click', () => _attachSelectedOdysseusItems(menu));
+    menu.querySelector('.email-odysseus-attach-selected')?.addEventListener('click', () => _attachSelectedAUSTINItems(menu));
     setTimeout(() => {
       document.addEventListener('click', _attachMenuOutsideClick, true);
       document.addEventListener('keydown', _attachMenuEscape, true);
     }, 0);
-    _loadOdysseusAttachItems(menu, 'document');
+    _loadAUSTINAttachItems(menu, 'document');
   }
 
   function _isMarkdownImageFile(file) {
